@@ -8,7 +8,7 @@ A production-ready infrastructure-as-code solution that transforms a fresh Debia
 
 ## 🚀 Overview
 
-This project demonstrates modern DevOps practices by automating the complete provisioning of a subscription-based software delivery platform. The script orchestrates the deployment of a multi-tier web application with integrated payment processing, license validation, and automated maintenance workflows.
+This project demonstrates modern DevOps practices by automating the complete provisioning of a subscription-based software delivery platform. The script orchestrates the deployment of a multi-tier web application with integrated payment, license validation, and automated maintenance workflows.
 
 **Perfect for demonstrating:**
 - Infrastructure as Code (IaC) principles
@@ -23,19 +23,19 @@ This project demonstrates modern DevOps practices by automating the complete pro
 The provisioned system implements a complete SaaS business model:
 ```
 ┌─────────────────────────────────────────────────┐
-│                Web Application Layer             │
-│  ┌──────────────┐         ┌──────────────┐     │
-│  │ register.php │         │  login.php   │     │
-│  │ User Signup  │────────▶│ Auth + Store │     │
-│  └──────────────┘         └──────────────┘     │
+│                Web Application Layer            │
+│  ┌──────────────┐         ┌──────────────┐      │
+│  │ register.php │         │  login.php   │      │
+│  │ User Signup  │────────▶│ Auth + Store │      │
+│  └──────────────┘         └──────────────┘      │
 └─────────────────┬───────────────┬───────────────┘
                   │               │
         ┌─────────▼───────────────▼─────────┐
-        │      MySQL Database Layer          │
-        │  • User accounts                   │
-        │  • Subscription management         │
-        │  • License expiration tracking     │
-        └─────────────┬──────────────────────┘
+        │      MySQL Database Layer         │
+        │  • User accounts                  │
+        │  • Subscription management        │
+        │  • License expiration tracking    │
+        └─────────────┬─────────────────────┘
                       │
         ┌─────────────▼──────────────────────┐
         │     Flask REST API Layer           │
@@ -43,12 +43,12 @@ The provisioned system implements a complete SaaS business model:
         │  • Software authentication         │
         └────────────────────────────────────┘
                       │
-        ┌─────────────▼──────────────────────┐
-        │    Automated Operations Layer      │
+        ┌─────────────▼───────────────────────┐
+        │    Automated Operations Layer       │
         │  • Daily subscription reconciliation│
-        │  • Automated database backups      │
-        │  • Cron-based maintenance jobs     │
-        └────────────────────────────────────┘
+        │  • Automated database backups       │
+        │  • Cron-based maintenance jobs      │
+        └─────────────────────────────────────┘
 ```
 
 ## ✨ Features
@@ -81,30 +81,30 @@ The provisioned system implements a complete SaaS business model:
 
 | Layer | Technology |
 |-------|-----------|
-| **Web Server** | Apache/Nginx |
+| **Web Server** | Apache|
 | **Backend** | PHP |
 | **API** | Python Flask |
 | **Database** | MySQL |
-| **Automation** | Bash, Cron |
+| **Automation** | Bash, Python, Cron |
 | **OS** | Debian Linux |
 
 ## 📋 Prerequisites
 
-- Fresh Debian installation (Debian 10/11/12)
+- Fresh Debian installation (Debian 13)
 - Root or sudo access
 - Internet connectivity for package installation
 
 ## ⚡ Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/saas-provisioning.git
-cd saas-provisioning
+git clone https://github.com/denisnikov/saas-auth-platform.git
+cd saas-auth-platform
 
 # Make the script executable
 chmod +x provision.sh
 
 # Run the provisioning script
-sudo ./provision.sh
+./provision.sh
 ```
 
 The script will automatically:
@@ -119,31 +119,11 @@ The script will automatically:
 
 After successful provisioning:
 
-1. **Access the application**: `http://your-server-ip/`
-2. **Register a new account**: Navigate to `register.php`
+1. **Access the application**: `http://localhost/register.php`
+2. **Register a new account** 
 3. **Purchase subscription**: Log in and complete the payment flow
-4. **Download software**: Available immediately after purchase
+4. **Download software** 
 5. **Monitor operations**: Check cron logs for scheduled tasks
-
-## 📊 Automated Workflows
-
-### Daily Subscription Management
-```bash
-# Cron job runs daily at midnight
-0 0 * * * /usr/bin/python3 /path/to/update_subscriptions.py
-```
-- Checks all user accounts against expiration dates
-- Updates subscription status (active → inactive)
-- Enforces access control for expired licenses
-
-### Database Backup Schedule
-```bash
-# Automated backups with retention policy
-0 2 * * * /path/to/backup_database.sh
-```
-- Daily MySQL dumps with timestamp
-- Automated retention management
-- Disaster recovery preparedness
 
 ## 🎯 Use Cases
 
