@@ -20,7 +20,8 @@ sudo apt install -y \
     python3-venv \
     php \
     php-mysql \
-    libapache2-mod-php
+    libapache2-mod-php \
+    mariadb-server
 
 # Verify installations
 echo "✅ Basic utilities installed:"

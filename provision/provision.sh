@@ -37,7 +37,6 @@ fi
 
 # Make all scripts executable
 chmod +x $SETUP_SCRIPTS_DIR/*.sh
-chmod +x $SYSTEM_SCRIPTS_DIR/*.sh
 chmod +x $SYSTEM_SCRIPTS_DIR/*.py
 chmod +x $PROVISION_DIR/start_services.sh
 

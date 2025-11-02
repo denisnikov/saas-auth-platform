@@ -6,7 +6,6 @@ echo "⏰ Setting up cron jobs and system scripts..."
 
 # Create system scripts directory
 sudo mkdir -p /usr/local/bin
-sudo chown $USER:$USER /usr/local/bin
 
 # Copy system scripts from nested structure
 echo "📁 Installing system scripts..."
@@ -20,10 +19,9 @@ sudo cp system_scripts/subscription_updater/subscription_updater.py /usr/local/b
 # Copy user management script (main script only)  
 sudo cp system_scripts/user_management_software/user_management.py /usr/local/bin/
 
-# Copy software client to web downloads
-sudo mkdir -p /var/www/html/downloads
-sudo cp system_scripts/software_client.py /var/www/html/downloads/
-sudo chmod 644 /var/www/html/downloads/software_client.py
+# Copy software client to web root
+sudo cp system_scripts/software_client.py /var/www/html/
+sudo chmod 644 /var/www/html/software_client.py
 
 # Make scripts executable
 sudo chmod +x /usr/local/bin/mysql_backup.sh
@@ -36,14 +34,16 @@ echo "🐍 Setting up virtual environments for Python scripts..."
 # Subscription updater venv
 echo "Setting up subscription updater virtual environment..."
 sudo mkdir -p /usr/local/lib/subscription_updater
-sudo cp -r system_scripts/subscription_updater/venv /usr/local/lib/subscription_updater/
-sudo chmod -R 755 /usr/local/lib/subscription_updater
+cd /usr/local/lib/subscription_updater
+sudo python3 -m venv venv
+sudo ./venv/bin/pip install mysql-connector-python
 
 # User management venv  
 echo "Setting up user management virtual environment..."
 sudo mkdir -p /usr/local/lib/user_management
-sudo cp -r system_scripts/user_management_software/venv /usr/local/lib/user_management/
-sudo chmod -R 755 /usr/local/lib/user_management
+cd /usr/local/lib/user_management
+sudo python3 -m venv venv
+sudo ./venv/bin/pip install mysql-connector-python
 
 # Create log directories
 sudo mkdir -p /var/log/mysql_backups
@@ -51,17 +51,28 @@ sudo mkdir -p /var/log/subscription_updates
 sudo chown $USER:$USER /var/log/mysql_backups
 sudo chown $USER:$USER /var/log/subscription_updates
 
-# Add cron jobs
+# Add cron jobs - using a temporary file to avoid crontab issues
 echo "📅 Setting up cron jobs..."
 
-# Backup cron job (daily at 2 AM)
-(crontab -l 2>/dev/null | grep -v "/usr/local/bin/mysql_backup.sh"; echo "0 2 * * * /usr/local/bin/mysql_backup.sh >> /var/log/mysql_backups/backup.log 2>&1") | crontab -
+# Create a temporary crontab file
+TEMP_CRON=$(mktemp)
 
-# Subscription updater cron job (daily at 3 AM) - uses its own venv
-(crontab -l 2>/dev/null | grep -v "subscription_updater.py"; echo "0 3 * * * /usr/local/lib/subscription_updater/venv/bin/python3 /usr/local/bin/subscription_updater.py >> /var/log/subscription_updates/updater.log 2>&1") | crontab -
+# Get existing crontab and remove any of our jobs
+if crontab -l 2>/dev/null; then
+    crontab -l | grep -v -E "(mysql_backup|subscription_updater|backup cleanup)" > "$TEMP_CRON" || true
+else
+    > "$TEMP_CRON"
+fi
 
-# Cleanup old backup files (daily at 4 AM)
-(crontab -l 2>/dev/null | grep -v "find /var/backups/mysql"; echo "0 4 * * * find /var/backups/mysql -name \"*.sql.gz\" -mtime +7 -delete >> /var/log/mysql_backups/cleanup.log 2>&1") | crontab -
+# Add our cron jobs
+echo "# Authentication System Cron Jobs" >> "$TEMP_CRON"
+echo "0 2 * * * /usr/local/bin/mysql_backup.sh >> /var/log/mysql_backups/backup.log 2>&1" >> "$TEMP_CRON"
+echo "0 3 * * * /usr/local/lib/subscription_updater/venv/bin/python3 /usr/local/bin/subscription_updater.py >> /var/log/subscription_updates/updater.log 2>&1" >> "$TEMP_CRON"
+echo "0 4 * * * find /var/backups/mysql -name \"*.sql.gz\" -mtime +7 -delete >> /var/log/mysql_backups/cleanup.log 2>&1" >> "$TEMP_CRON"
+
+# Install the new crontab
+crontab "$TEMP_CRON"
+rm -f "$TEMP_CRON"
 
 echo "✅ Cron jobs installed:"
 echo "   - Database backup: Daily at 2 AM"
@@ -72,12 +83,6 @@ echo "   - Backup cleanup: Daily at 4 AM"
 echo ""
 echo "📋 Current cron jobs:"
 crontab -l
-
-# Create initial log files
-sudo touch /var/log/mysql_backups/backup.log
-sudo touch /var/log/subscription_updates/updater.log
-sudo chown $USER:$USER /var/log/mysql_backups/backup.log
-sudo chown $USER:$USER /var/log/subscription_updates/updater.log
 
 # Create wrapper scripts for easy manual execution
 echo "🔧 Creating wrapper scripts for manual execution..."
@@ -101,7 +106,8 @@ echo ""
 echo "✅ Cron jobs setup completed!"
 echo "📁 System scripts installed in /usr/local/bin/"
 echo "🐍 Virtual environments set up in /usr/local/lib/"
-echo "📊 Logs will be stored in /var/log/mysql_backups/ and /var/log/subscription_updates/"
+echo "📊 Log directories created in /var/log/"
+echo "💾 Software client available at: /var/www/html/software_client.py"
 echo ""
 echo "💡 Manual commands:"
 echo "   Run subscription update: update_subscriptions"

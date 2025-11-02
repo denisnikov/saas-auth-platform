@@ -4,16 +4,6 @@ set -e
 
 echo "🗄️ Setting up MySQL database..."
 
-# Install MySQL server if not installed
-if ! command -v mysql &> /dev/null; then
-    echo "📦 Installing MySQL server..."
-    sudo apt install -y mysql-server
-fi
-
-# Ensure MySQL service is running
-sudo systemctl start mysql
-sudo systemctl enable mysql
-
 # Load environment variables from the API .venv file
 if [ -f "config/.venv" ]; then
     source config/.venv
@@ -42,14 +32,32 @@ echo "   User: $DB_USER"
 # Function to secure MySQL installation
 secure_mysql() {
     echo "🔒 Securing MySQL installation..."
-    sudo mysql -e "
-        ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_PASS}';
-        DELETE FROM mysql.user WHERE User='';
-        DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
-        DROP DATABASE IF EXISTS test;
-        DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
-        FLUSH PRIVILEGES;
-    "
+    
+    # Check if we're using MySQL or MariaDB
+    if mysql --version | grep -q "MariaDB"; then
+        echo "📦 Detected MariaDB"
+        # MariaDB syntax
+        sudo mysql -e "
+            SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${DB_PASS}');
+            DELETE FROM mysql.user WHERE User='';
+            DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+            DROP DATABASE IF EXISTS test;
+            DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+            FLUSH PRIVILEGES;
+        "
+    else
+        echo "📦 Detected MySQL"
+        # MySQL 8.0+ syntax
+        sudo mysql -e "
+            ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_PASS}';
+            DELETE FROM mysql.user WHERE User='';
+            DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+            DROP DATABASE IF EXISTS test;
+            DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+            FLUSH PRIVILEGES;
+        "
+    fi
+    
     echo "✅ MySQL secured"
 }
 

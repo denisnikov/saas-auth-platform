@@ -17,7 +17,7 @@ fi
 
 # Enable Apache modules
 sudo a2enmod rewrite
-sudo a2enmod php8.2  # Adjust version if needed
+sudo a2enmod php8.4  # Adjust version if needed
 
 # Create web directory structure
 sudo mkdir -p /var/www/html
@@ -36,8 +36,6 @@ if [ -f "www/.htaccess" ]; then
 fi
 
 # Copy software client to web directory for download
-sudo mkdir -p /var/www/html/downloads
-sudo cp system_scripts/software_client.py /var/www/html/downloads/
 sudo chmod 644 /var/www/html/downloads/software_client.py
 
 # Set proper permissions
