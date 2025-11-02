@@ -1,0 +1,9 @@
+# Database configuration
+DB_HOST=localhost
+DB_NAME=auth_server
+DB_USER=admin
+DB_PASS=REDACTED
+
+# Flask configuration
+FLASK_HOST=localhost
+FLASK_PORT=5000
