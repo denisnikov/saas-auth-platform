@@ -28,6 +28,7 @@ echo "📁 Copying PHP files to /var/www/html..."
 sudo cp www/register.php /var/www/html/
 sudo cp www/login.php /var/www/html/
 sudo cp www/env_loader.php /var/www/html/
+sudo cp system_scripts/software_client.py /var/www/html
 
 # Copy .htaccess if it exists
 if [ -f "www/.htaccess" ]; then
@@ -36,7 +37,7 @@ if [ -f "www/.htaccess" ]; then
 fi
 
 # Copy software client to web directory for download
-sudo chmod 644 /var/www/html/downloads/software_client.py
+sudo chmod 644 /var/www/html/software_client.py
 
 # Set proper permissions
 sudo chown -R www-data:www-data /var/www/html
