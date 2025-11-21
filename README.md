@@ -8,7 +8,7 @@
 ![PHP](https://img.shields.io/badge/Backend-PHP-777BB4?style=flat-square&logo=php)
 ![MySQL](https://img.shields.io/badge/Database-MySQL-4479A1?style=flat-square&logo=mysql)
 
-## 📖 Overview
+## Overview
 
 This project represents a complete SaaS ecosystem designed for a fictional software vendor. It addresses three core business challenges:
 1.  **Operational Efficiency:** Reducing server setup time from hours to minutes via automation.
@@ -17,7 +17,7 @@ This project represents a complete SaaS ecosystem designed for a fictional softw
 
 The core component is `provision.sh`, a Bash script that transforms a fresh **Debian 13** installation into a production-ready server with a secured LAMP stack, scheduled cron jobs, and a REST API for software authentication.
 
-## 🏗 Architecture
+## Architecture
 
 The system is composed of three distinct layers:
 
@@ -25,7 +25,7 @@ The system is composed of three distinct layers:
 2.  **Application Layer (PHP/MySQL):** A transactional web frontend (`register.php`, `login.php`) and a REST API for software license verification.
 3.  **Automation Layer (Python):** Background services that manage subscription validity and administrative CLI tools.
 
-## 🚀 Key Features & Business Outcomes
+## Key Features & Business Outcomes
 
 ### 1. Automated Provisioning (`provision.sh`)
 *   **Function:** Installs Apache, PHP, MySQL, Python dependencies, and configures system security.
@@ -43,7 +43,7 @@ The system is composed of three distinct layers:
 ### 4. Admin Management Tool
 *   **Function:** A Python-based CLI tool allowing system administrators to manually extend subscriptions without interacting directly with SQL queries.
 
-## 🛠️ Installation & Usage
+## Installation & Usage
 
 ### Prerequisites
 *   A fresh installation of **Debian 13 (Bookworm)**.
