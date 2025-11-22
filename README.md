@@ -30,7 +30,7 @@ The system is composed of three distinct layers:
 ### 1. Automated Provisioning (`provision.sh`)
 *   **Function:** Installs Apache, PHP, MySQL, Python dependencies, and configures system security.
 *   **Metric:** Reduces deployment time by **~98%**.
-*   **Disaster Recovery:** Includes the equivalent to a `--restore` flag to rebuild the server state from a MySQL backup dump during provisioning.
+*   **Disaster Recovery:** Includes the equivalent of a `--restore` flag to rebuild the server state from a MySQL backup dump during provisioning.
 
 ### 2. Subscription Lifecycle Controller (`subscription_updater.py`)
 *   **Function:** A cron-triggered Python script that audits the user database daily.
