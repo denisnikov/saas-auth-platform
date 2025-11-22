@@ -32,7 +32,7 @@ The system is composed of three distinct layers:
 *   **Metric:** Reduces deployment time by **~98%**.
 *   **Disaster Recovery:** Includes the equivalent to a `--restore` flag to rebuild the server state from a MySQL backup dump during provisioning.
 
-### 2. Subscription Lifecycle Controller (`subscription_monitor.py`)
+### 2. Subscription Lifecycle Controller (`subscription_updater.py`)
 *   **Function:** A cron-triggered Python script that audits the user database daily.
 *   **Revenue Protection:** Automatically calculates expiry dates. If a subscription is expired, the user's status is instantly set to `inactive`, preventing unauthorized access to the software.
 
